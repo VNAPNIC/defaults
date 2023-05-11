@@ -1,11 +1,7 @@
 package defaults
 
 import (
-	"encoding/json"
-	"errors"
-	"net"
 	"reflect"
-	"strconv"
 	"testing"
 	"time"
 
@@ -116,12 +112,9 @@ type Sample struct {
 	MyMap       MyMap     `default:"{}"`
 	MySlice     MySlice   `default:"[]"`
 
-	StructWithText        net.IP         `default:"10.0.0.1"`
-	StructPtrWithText     *net.IP        `default:"10.0.0.1"`
-	StructWithJSON        Struct         `default:"{\"Foo\": 123}"`
-	StructPtrWithJSON     *Struct        `default:"{\"Foo\": 123}"`
-	MapWithJSON           map[string]int `default:"{\"foo\": 123}"`
-	TypeWithUnmarshalJSON JSONOnlyType   `default:"\"one\""`
+	StructWithJSON    Struct         `default:"{\"Foo\": 123}"`
+	StructPtrWithJSON *Struct        `default:"{\"Foo\": 123}"`
+	MapWithJSON       map[string]int `default:"{\"foo\": 123}"`
 
 	MapOfPtrStruct     map[string]*Struct
 	MapOfStruct        map[string]Struct
@@ -160,24 +153,6 @@ func (s *Struct) SetDefaults() {
 
 type Embedded struct {
 	Int int `default:"1"`
-}
-
-type JSONOnlyType int
-
-func (j *JSONOnlyType) UnmarshalJSON(b []byte) error {
-	var tmp string
-	if err := json.Unmarshal(b, &tmp); err != nil {
-		return err
-	}
-	if i, err := strconv.Atoi(tmp); err == nil {
-		*j = JSONOnlyType(i)
-		return nil
-	}
-	if tmp == "one" {
-		*j = 1
-		return nil
-	}
-	return errors.New("cannot unmarshal")
 }
 
 func TestMustSet(t *testing.T) {
@@ -510,14 +485,6 @@ func TestInit(t *testing.T) {
 		}
 	})
 
-	t.Run("complex types with text unmarshal", func(t *testing.T) {
-		if !sample.StructWithText.Equal(net.ParseIP("10.0.0.1")) {
-			t.Errorf("it should initialize struct with text")
-		}
-		if !sample.StructPtrWithText.Equal(net.ParseIP("10.0.0.1")) {
-			t.Errorf("it should initialize struct with text")
-		}
-	})
 	t.Run("complex types with json", func(t *testing.T) {
 		if sample.StructWithJSON.Foo != 123 {
 			t.Errorf("it should initialize struct with json")
@@ -530,10 +497,6 @@ func TestInit(t *testing.T) {
 		}
 		if len(sample.SliceWithJSON) == 0 || sample.SliceWithJSON[0] != "foo" {
 			t.Errorf("it should initialize slice with json")
-		}
-
-		if int(sample.TypeWithUnmarshalJSON) != 1 {
-			t.Errorf("it should initialize json unmarshaled value")
 		}
 
 		t.Run("invalid json", func(t *testing.T) {
