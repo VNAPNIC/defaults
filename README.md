@@ -3,7 +3,7 @@ defaults
 
 [![CircleCI](https://circleci.com/gh/creasty/defaults/tree/master.svg?style=svg)](https://circleci.com/gh/creasty/defaults/tree/master)
 [![codecov](https://codecov.io/gh/creasty/defaults/branch/master/graph/badge.svg)](https://codecov.io/gh/creasty/defaults)
-[![GitHub release](https://img.shields.io/github/release/creasty/defaults.svg)](https://github.com/creasty/defaults/releases)
+[![GitHub release](https://img.shields.io/github/release/creasty/defaults.svg)](https://github.com/vnapnic/defaults/releases)
 [![License](https://img.shields.io/github/license/creasty/defaults.svg)](./LICENSE)
 
 Initialize structs with default values

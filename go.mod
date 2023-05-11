@@ -1,3 +1,3 @@
-module github.com/creasty/defaults
+module github.com/vnapnic/defaults
 
-go 1.14
+go 1.20
